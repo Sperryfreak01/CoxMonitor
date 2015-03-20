@@ -7,15 +7,18 @@ import sys
 import time
 from datetime import date
 import notifications
-#sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 
-
-
+#ENTER YOUR COX LOGIN INFORMATION BELOW
 COX_username = ""
 COX_password = ""
 
-Pushover_app_token = ''
+
+#ENTER PUSHOVER INFO TO GET RECIEVE PUSH NOTIFICATIONS
 Pushover_user_token = ''
+Pushover_app_token = ''
+
+###########################################################################################################################3
+
 limit = ''
 usage = ''
 remain = ''
@@ -27,27 +30,19 @@ payload = {
     'onfailure'   : 'http://www.cox.com/resaccount/orangecounty/sign-in.cox',
     'targetFN'    : 'COX.net',
     'emaildomain' : '@cox.net',
-    'username'    : '',
-    'password'    : '',
+    'username'    : COX_username,
+    'password'    : COX_password,
     'rememberme'  : 'on'
 }
 
 with session() as web:
     web.post('https://idm.east.cox.net/idm/coxnetlogin', data=payload)
     request = web.get('https://myaccount.cox.net/internettools/datausage/usage.cox')
-    print request.headers
-    print request.text
 
     soup = BeautifulSoup(request.text, 'html5lib')
-
-#    for table in soup.findAll('tbody'):
-#        for rows in table.findAll('tr'):
     x = 0
-    for cols in soup.findAll('td'):
-        print(cols)
+    for cols in soup.findAll('td')
         for cell in cols:
-            print(cell)
-
             if "GB" in cell:
                 x = x + 1
                 if x == 1:
@@ -67,7 +62,9 @@ with session() as web:
     print (d1)
     delta = d1 - d0
     print delta.days
-    notifications.pushover(message=usage +' of the ' + limit + ' month limit has been used. ' + remain + ' remains for the next ' + str(delta.days) + ' days', token = Pushover_app_token, user = Pushover_user_token)
+    notifications.pushover(message=usage +' of the ' + limit + ' month limit has been used. ' + remain + ' remains for the next ' + str(delta.days) + ' days', 
+			   token = Pushover_app_token, 
+			   user = Pushover_user_token)
 
 
 
